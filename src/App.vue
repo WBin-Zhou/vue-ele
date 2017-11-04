@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header :seller="seller"></v-header>
     <div class="tab">
       <div class="tab-item">
         <router-link :to="{path:'goods'}">商品</router-link>
@@ -18,8 +18,21 @@
 
 <script>
   import header from 'components/v-header/v-header.vue'
-  export default {
-    name: 'app',
+  const ERR_OK = 0;
+  export default{
+    data(){
+      return {
+        seller: {}
+      }
+    },
+    created(){
+      this.$http.get('/api/seller').then(response => {
+        response = response.data;
+        if (response.errno === ERR_OK) {
+          this.seller = response.data;
+        }
+      })
+    },
     components: {
       'v-header': header
     }
@@ -27,6 +40,7 @@
 </script>
 <style lang="scss" type="text/scss">
   @import "./common/css/mixin";
+
   #app {
     .tab {
       display: flex;
@@ -41,7 +55,7 @@
           display: block;
           font-size: 14px;
           color: rgb(77, 85, 93);
-          &:hover {
+          &.active {
             color: rgb(240, 20, 20)
           }
         }

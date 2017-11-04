@@ -4,6 +4,8 @@ import Vue from 'vue'
 import router from './router'
 import App from './App'
 import fastClick from 'fastclick'
+import axios from 'axios'
+Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 fastClick.attach(document.body);
 import './common/css/index.scss'

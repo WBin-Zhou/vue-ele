@@ -9,6 +9,9 @@
 
 3.[scss](https://github.com/sass/sass)预处理器
 
+4.[axios](https://github.com/axios/axios)和es6语法
+
+
 
 ## Build Setup
 
