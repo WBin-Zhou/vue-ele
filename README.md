@@ -1,7 +1,5 @@
 # vue-ele
-
 > a fork ele proiect
-
 ## Build Setup
 
 ``` bash
