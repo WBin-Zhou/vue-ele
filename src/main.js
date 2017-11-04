@@ -3,13 +3,14 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-
-Vue.config.productionTip = false
-
+import fastClick from 'fastclick'
+Vue.config.productionTip = false;
+fastClick.attach(document.body);
+import './common/css/index.scss'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
   template: '<App/>',
   components: { App }
-})
+});
