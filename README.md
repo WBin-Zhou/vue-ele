@@ -1,5 +1,7 @@
 # vue-ele
-> a fork ele proiect
+> a fork ele's project,参考了ustbhuangyi的[项目源码](https://github.com/ustbhuangyi/vue-sell)
+## 项目所用技术：
+本项目使用[vue-cli](https://github.com/vuejs/vue-cli)脚手架工具生成[webpack](https://github.com/webpack/webpack)版模板，再用[vue](https://cn.vuejs.org/)、[vue-router](https://router.vuejs.org/zh-cn/)、[fastclick](https://github.com/ftlabs/fastclick)(用于清除移动端click延迟)
 ## Build Setup
 
 ``` bash
