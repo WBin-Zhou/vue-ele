@@ -2,7 +2,8 @@
   <div id="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="item in goods" class="menu-item">
+        <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}"
+            @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -11,7 +12,7 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="item in goods" class="food-list">
+        <li v-for="item in goods" class="food-list food-list-hook">
           <h2 class="title">{{item.name}}</h2>
           <ul>
             <li v-for="food in item.foods" class="food-item">
@@ -25,7 +26,8 @@
                   <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                 </div>
                 <div class="price">
-                  <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
+                  <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice"
+                                                                class="old">￥{{food.oldPrice}}</span>
                 </div>
               </div>
             </li>
@@ -47,7 +49,21 @@
     },
     data(){
       return {
-        goods: []
+        goods: [],
+        listHeight: [],
+        scrollY: 0
+      }
+    },
+    computed: {
+      currentIndex(){
+        for (let i = 0; i < this.listHeight.length; i++) {
+          let height1 = this.listHeight[i];
+          let height2 = this.listHeight[i + 1];
+          if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+            return i;
+          }
+        }
+        return 0;
       }
     },
     created(){
@@ -56,17 +72,41 @@
         response = response.data;
         if (response.errno === ERR_OK) {
           this.goods = response.data;
+          //保证dom渲染
           this.$nextTick(() => {
             this._initScroll();
+            this._calculateHeight();
           });
         }
       })
     },
-    methods:{
-        _initScroll(){
-            this.meunScroll = new BScroll(this.$refs.menuWrapper,{});
-            this.foodsScroll = new BScroll(this.$refs.foodsWrapper,{});
+    methods: {
+      _initScroll(){
+        this.meunScroll = new BScroll(this.$refs.menuWrapper, {bounce: false,click:true});
+        this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {probeType: 3, bounce: false});
+        this.foodsScroll.on('scroll', (pos) => {
+          this.scrollY = Math.abs(Math.round(pos.y));
+        })
+      },
+      _calculateHeight(){
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+        let height = 0;
+        this.listHeight.push(height);
+        for (let i = 0; i < foodList.length; i++) {
+          let item = foodList[i];
+          height += item.clientHeight;
+          this.listHeight.push(height);
         }
+      },
+      selectMenu(index,event){
+          if(!event._constructed){
+              return;
+          }
+        // /去除pc端响应两次事件；
+        let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+          let el = foodList[index];
+          this.foodsScroll.scrollToElement(el,300)
+      }
     }
   }
 </script>
@@ -91,6 +131,16 @@
         width: 56px;
         line-height: 14px;
         padding: 0 12px;
+        &.current {
+          position: relative;
+          z-index: 10;
+          margin-top: -1px;
+          background: #fff;
+          font-weight: 700;
+          .text {
+            @include border-none();
+          }
+        }
         .icon {
           display: inline-block;
           vertical-align: top;
@@ -128,69 +178,67 @@
     }
     .foods-wrapper {
       flex: 1;
-      .title{
+      .title {
         padding-left: 14px;
         height: 26px;
         line-height: 26px;
         border-left: 2px solid #d9dde1;
         font-size: 12px;
-        color: rgb(147,153,159);
+        color: rgb(147, 153, 159);
         background: #f3f5f7;
       }
-      .food-item{
+      .food-item {
         display: flex;
         margin: 18px;
         padding-bottom: 18px;
         @include border-1px(rgba(7, 17, 27, 0.1));
-        &:last-child{
+        &:last-child {
           @include border-none();
           margin-bottom: 0;
         }
-        .icon{
+        .icon {
           width: 57px;
           margin-right: 10px;
         }
-        .content{
+        .content {
           flex: 1;
-          .name{
+          .name {
             margin: 2px 0 8px;
             height: 14px;
             line-height: 14px;
             font-size: 14px;
-            color: rgb(7,17,27)
+            color: rgb(7, 17, 27)
           }
-          .desc,.extra{
+          .desc, .extra {
             line-height: 10px;
             font-size: 10px;
-            color: rgb(147,153,159);
+            color: rgb(147, 153, 159);
           }
-          .desc{
+          .desc {
             line-height: 12px;
             margin-bottom: 8px;
           }
-          .extra{
-            .count{
+          .extra {
+            .count {
               margin-right: 12px;
             }
           }
-          .price{
+          .price {
             font-weight: 700;
             line-height: 24px;
-            .now{
+            .now {
               font-size: 14px;
               margin-right: 8px;
-              color: rgb(240,20,20);
+              color: rgb(240, 20, 20);
             }
-            .old{
+            .old {
               text-decoration: line-through;
               font-size: 10px;
-              color: rgb(147,153,159);
+              color: rgb(147, 153, 159);
             }
           }
         }
       }
     }
   }
-
-
 </style>
