@@ -35,11 +35,14 @@
         </li>
       </ul>
     </div>
+    <shopCart :deliveryPrice="seller.deliveryPrice"
+              :minPrice="seller.minPrice"></shopCart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
+  import shopCart from 'components/shopcart/shopcart'
   const ERR_OK = 0;
   export default{
     props: {
@@ -82,7 +85,7 @@
     },
     methods: {
       _initScroll(){
-        this.meunScroll = new BScroll(this.$refs.menuWrapper, {bounce: false,click:true});
+        this.meunScroll = new BScroll(this.$refs.menuWrapper, {bounce: false, click: true});
         this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {probeType: 3, bounce: false});
         this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -98,15 +101,18 @@
           this.listHeight.push(height);
         }
       },
-      selectMenu(index,event){
-          if(!event._constructed){
-              return;
-          }
+      selectMenu(index, event){
+        if (!event._constructed) {
+          return;
+        }
         // /去除pc端响应两次事件；
         let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
-          let el = foodList[index];
-          this.foodsScroll.scrollToElement(el,300)
+        let el = foodList[index];
+        this.foodsScroll.scrollToElement(el, 300)
       }
+    },
+    components: {
+      shopCart
     }
   }
 </script>
