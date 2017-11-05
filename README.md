@@ -11,6 +11,8 @@
 
 4.[axios](https://github.com/axios/axios)和es6语法
 
+5.[better-scroll](https://github.com/ustbhuangyi/better-scroll)
+
 
 
 ## Build Setup
